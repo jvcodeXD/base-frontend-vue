@@ -1,13 +1,16 @@
-// src/main.ts
-import { createApp } from "vue";
-import App from "./App.vue";
-import { createPinia } from "pinia";
-import vuetify from "./plugins/vuetify";
-import router from "./router";
+import { createApp } from 'vue'
+import App from './App.vue'
+import { createPinia } from 'pinia'
+import piniaPersistedstate from 'pinia-plugin-persistedstate'
+import vuetify from './plugins/vuetify'
+import router from './router'
 
-const app = createApp(App);
-app.use(createPinia());
-app.use(vuetify);
-app.use(router);
+const app = createApp(App)
 
-app.mount("#app");
+const pinia = createPinia()
+pinia.use(piniaPersistedstate)
+
+app.use(pinia)
+app.use(router)
+app.use(vuetify)
+app.mount('#app')
