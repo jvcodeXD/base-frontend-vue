@@ -24,8 +24,14 @@ const errorMessage = ref('')
 const login = async () => {
   try {
     const response = await loginService(username.value, pass.value)
-    authStore.login(response.token)
-    router.push('/')
+
+    authStore.login(response.accessToken, response.user.role)
+
+    if (response.user.role === 'admin') {
+      router.push('admin-dashboard')
+    } else {
+      router.push('user-dashboard')
+    }
   } catch (error) {
     errorMessage.value = 'Usuario o contraseña incorrectos'
   }
