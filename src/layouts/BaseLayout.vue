@@ -8,7 +8,7 @@
     </v-btn>
 
     <!-- Sidebar -->
-    <Sidebar :drawer="drawer" @toggle-drawer="drawer = !drawer" />
+    <SideBarSelector :drawer="drawer" @toggle-drawer="drawer = !drawer" />
 
     <!-- Contenido principal -->
     <v-main>
@@ -21,9 +21,9 @@
 
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
-import Sidebar from '@/components/SideBar.vue'
 import { useThemeStore } from '@/store/theme'
 import { useTheme } from 'vuetify'
+import SideBarSelector from '@/components/SideBarSelector.vue'
 
 const drawer = ref(true)
 const themeStore = useThemeStore()

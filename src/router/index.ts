@@ -27,16 +27,17 @@ const routes = [
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ]
 
+// Crear router
 const router = createRouter({
   history: createWebHistory(),
   routes,
 })
 
-// Middleware Global
+// Middleware Global de protección de rutas
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
 
-  // 1. Proteger rutas privadas
+  // Si la ruta requiere autenticación
   if (to.meta.requiresAuth) {
     if (!authStore.isAuthenticated) {
       next({ name: 'Login' })
@@ -55,9 +56,8 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  // 2. Proteger rutas públicas para logueados
-  const publicRoutes = ['Home', 'About', 'Login']
-  if (authStore.isAuthenticated && publicRoutes.includes(to.name as string)) {
+  // Si estás autenticado y quieres ir al Login
+  if (authStore.isAuthenticated && to.name === 'Login') {
     if (authStore.role === 'admin') {
       next({ name: 'AdminDashboard' })
     } else if (authStore.role === 'user') {
@@ -68,6 +68,7 @@ router.beforeEach((to, from, next) => {
     return
   }
 
+  // Permitir todo lo demás
   next()
 })
 

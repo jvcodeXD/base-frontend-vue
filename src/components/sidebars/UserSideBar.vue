@@ -1,22 +1,24 @@
 <template>
   <v-navigation-drawer app :permanent="true" :width="drawer ? 240 : 72" color="primary" dark>
     <v-list dense nav>
-      <v-list-item link :to="{ name: 'Home' }">
+      <v-list-item @click="goTo('Home')">
         <v-icon>mdi-home</v-icon>
         <v-list-item-title v-if="drawer">Home</v-list-item-title>
       </v-list-item>
 
-      <v-list-item link :to="{ name: 'About' }">
+      <v-list-item @click="goTo('About')">
         <v-icon>mdi-information</v-icon>
         <v-list-item-title v-if="drawer">About</v-list-item-title>
       </v-list-item>
 
-      <v-list-item @click="handleAuth">
-        <v-icon>{{ authStore.isAuthenticated ? 'mdi-logout' : 'mdi-login' }}</v-icon>
+      <v-list-item @click="goTo('UserDashboard')">
+        <v-icon>mdi-account</v-icon>
+        <v-list-item-title v-if="drawer">Mi Panel</v-list-item-title>
+      </v-list-item>
 
-        <v-list-item-title v-if="drawer">
-          {{ authStore.isAuthenticated ? 'Cerrar Sesión' : 'Iniciar Sesión' }}
-        </v-list-item-title>
+      <v-list-item @click="logout">
+        <v-icon>mdi-logout</v-icon>
+        <v-list-item-title v-if="drawer">Cerrar Sesión</v-list-item-title>
       </v-list-item>
     </v-list>
 
@@ -27,28 +29,28 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { logoutService } from '@/services/auth.service'
 
 const props = defineProps<{ drawer: boolean }>()
 const emit = defineEmits(['toggle-drawer'])
+
 const router = useRouter()
 const authStore = useAuthStore()
 
-const handleAuth = async () => {
-  if (authStore.isAuthenticated) {
-    try {
-      await logoutService()
-    } catch (error) {
-      console.error('Error en logout, ignorando...')
-    } finally {
-      authStore.logout()
-      router.push({ name: 'Home' })
-    }
-  } else {
-    router.push({ name: 'Login' })
+const goTo = (ruta: string) => {
+  router.push({ name: ruta })
+}
+
+const logout = async () => {
+  try {
+    await logoutService()
+  } catch (error) {
+    console.error('Error en logout')
+  } finally {
+    authStore.logout()
+    router.push({ name: 'Home' })
   }
 }
 </script>
