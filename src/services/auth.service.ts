@@ -9,3 +9,8 @@ export const logoutService = async () => {
   const response = await api.post('/auth/logout')
   return response.data
 }
+
+export const refreshService = async () => {
+  const response = await api.post('/auth/refresh')
+  return response.data
+}

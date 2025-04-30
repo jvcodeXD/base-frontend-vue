@@ -35,14 +35,14 @@
 </template>
 
 <script setup lang="ts">
-import { useGet } from '@/composables/api/useGet'
-import { useDelete } from '@/composables/api/useDelete'
-import { useConfirmDialog } from '@/composables/useConfirmDialog'
-import { CreateUser, EditUser } from '.'
-import { Usuario } from '@/interfaces'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
-const { data: usuarios, execute: reloadUsuarios } = useGet<Usuario[]>('/users')
+import { useConfirmDialog } from '@/composables'
+import { getAllUsers, deleteUser } from '@/services'
+import { Usuario } from '@/interfaces'
+import { CreateUser, EditUser } from '.'
+
+const usuarios = ref<Usuario[]>([])
 const { show } = useConfirmDialog()
 
 const modalCreate = ref(false)
@@ -63,8 +63,16 @@ const confirmDelete = async (usuario: Usuario) => {
   const confirmed = await show(`¿Deseas eliminar a ${usuario.fullName}?`, 'warning')
   if (!confirmed) return
 
-  const { execute } = useDelete(`/usuarios/${usuario.id}`)
-  await execute()
+  await deleteUser(usuario.id)
   reloadUsuarios()
 }
+
+const reloadUsuarios = async () => {
+  const response = await getAllUsers()
+  usuarios.value = response.data
+}
+
+onMounted(() => {
+  reloadUsuarios()
+})
 </script>

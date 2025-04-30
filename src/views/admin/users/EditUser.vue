@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import { usePut } from '@/composables/api'
+import { updateUser } from '@/services'
 import { Usuario } from '@/interfaces'
 
 const props = defineProps<{
@@ -58,8 +58,7 @@ const cancel = () => {
 }
 
 const submit = async () => {
-  const { execute } = usePut(`/users/${props.user.id}`)
-  await execute(localUser.value)
+  await updateUser(props.user.id, localUser.value)
   emit('saved')
   isOpen.value = false
 }

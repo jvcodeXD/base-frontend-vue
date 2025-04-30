@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { usePost } from '@/composables/api'
+import { createUser } from '@/services'
 import { Usuario } from '@/interfaces'
 
 const props = defineProps<{ modelValue: boolean }>()
@@ -46,8 +46,7 @@ const cancel = () => {
 }
 
 const submit = async () => {
-  const { execute } = usePost('/users')
-  await execute(localUser.value)
+  await createUser(localUser.value)
   emit('saved')
   isOpen.value = false
 }

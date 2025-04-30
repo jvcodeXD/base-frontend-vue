@@ -1,12 +1,13 @@
 import axios from 'axios'
 import { useAuthStore, useLoadingStore } from '@/store'
+import { refreshService } from '@/services/auth.service'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000/api',
   timeout: 10000,
 })
 
-// Interceptor: agregar token
+// Interceptor de request: agrega token y activa loading
 api.interceptors.request.use(config => {
   const authStore = useAuthStore()
   const loadingStore = useLoadingStore()
@@ -19,21 +20,34 @@ api.interceptors.request.use(config => {
   return config
 })
 
-// Interceptor: manejar errores y detener loading
+// Interceptor de respuesta: maneja errores y refresh automático
 api.interceptors.response.use(
   response => {
     const loadingStore = useLoadingStore()
     loadingStore.stop()
     return response
   },
-  error => {
+  async error => {
     const loadingStore = useLoadingStore()
     loadingStore.stop()
 
-    if (error.response?.status === 401) {
-      const authStore = useAuthStore()
-      authStore.logout()
-      // Redirigir si es necesario
+    const originalRequest = error.config
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+
+      try {
+        const { accessToken, user } = await refreshService()
+        const authStore = useAuthStore()
+        authStore.login(accessToken, user)
+
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`
+        return api(originalRequest)
+      } catch (refreshError) {
+        const authStore = useAuthStore()
+        authStore.logout()
+        return Promise.reject(refreshError)
+      }
     }
 
     return Promise.reject(error)

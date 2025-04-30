@@ -1,1 +1,2 @@
-export { loginService, logoutService } from './auth.service'
+export { loginService, logoutService, refreshService } from './auth.service'
+export { getAllUsers, getUserById, createUser, updateUser, deleteUser } from './user.service'
