@@ -27,7 +27,10 @@ const login = async () => {
   try {
     const response = await loginService(username.value, pass.value)
 
-    authStore.login(response.accessToken, response.user.role)
+    authStore.login(response.accessToken, response.user.role, {
+      name: response.user.fullName,
+      photo: `http://localhost:4000${response.user.picture}`,
+    })
 
     toastStore.addToast('success', 'Inicio de sesión exitoso')
 
