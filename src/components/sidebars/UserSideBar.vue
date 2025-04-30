@@ -60,12 +60,11 @@ const logout = async () => {
     if (!confirm) return
 
     await logoutService()
-  } catch (error) {
-    notify.error('Error en logout')
-  } finally {
     toastStore.addToast('info', 'Sesión cerrada correctamente')
     authStore.logout()
     router.push({ name: 'Home' })
+  } catch (error) {
+    notify.error('Error en logout')
   }
 }
 </script>

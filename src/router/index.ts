@@ -11,7 +11,12 @@ import { useAuthStore } from '@/store/auth'
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/about', name: 'About', component: About },
-  { path: '/login', name: 'Login', component: Login },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    meta: { layout: 'auth' },
+  },
   {
     path: '/admin-dashboard',
     name: 'AdminDashboard',
@@ -24,7 +29,12 @@ const routes = [
     component: UserDashboard,
     meta: { requiresAuth: true, role: 'user' },
   },
-  { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound,
+    meta: { layout: 'error' },
+  },
 ]
 
 // Crear router

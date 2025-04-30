@@ -1,14 +1,19 @@
 import { defineStore } from 'pinia'
 
+interface User {
+  name: string
+  photo: string
+}
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     isAuthenticated: false,
     token: '',
     role: '',
-    user: {},
+    user: <User>{},
   }),
   actions: {
-    login(token: string, role: string, user: object) {
+    login(token: string, role: string, user: User) {
       this.isAuthenticated = true
       this.token = token
       this.role = role
@@ -18,7 +23,7 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = false
       this.token = ''
       this.role = ''
-      this.user = {}
+      this.user = <User>{}
     },
   },
   persist: true,
