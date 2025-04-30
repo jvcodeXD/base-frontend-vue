@@ -1,0 +1,22 @@
+<template>
+  <v-list-item class="d-flex flex-column align-center pt-4 pb-1">
+    <v-avatar size="64">
+      <img :src="photo" alt="Foto de perfil" />
+    </v-avatar>
+    <div
+      v-if="showName"
+      class="mt-2 text-subtitle-2 font-weight-medium text-center"
+      style="max-width: 100px; word-break: break-word"
+    >
+      {{ name }}
+    </div>
+  </v-list-item>
+</template>
+
+<script setup lang="ts">
+defineProps<{
+  name: string
+  photo: string
+  showName: boolean
+}>()
+</script>

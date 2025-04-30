@@ -10,5 +10,12 @@
 </template>
 
 <script setup lang="ts">
-// No necesitas lógica aquí todavía
+import { onMounted } from 'vue'
+import { useToastStore } from '@/store'
+
+const toastStore = useToastStore()
+
+onMounted(() => {
+  toastStore.showPendingToasts()
+})
 </script>

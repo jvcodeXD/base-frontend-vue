@@ -2,18 +2,11 @@
   <v-navigation-drawer app :permanent="true" :width="drawer ? 200 : 72" color="primary" dark>
     <v-list dense nav>
       <!-- Perfil -->
-      <v-list-item class="d-flex flex-column align-center pt-4 pb-1">
-        <v-avatar size="64">
-          <img :src="authStore.user?.photo" alt="Foto de perfil" />
-        </v-avatar>
-        <div
-          v-if="drawer"
-          class="mt-2 text-subtitle-2 font-weight-medium text-center"
-          style="max-width: 100px; word-break: break-word"
-        >
-          {{ authStore.user?.name || 'Usuario' }}
-        </div>
-      </v-list-item>
+      <SidebarProfile
+        :name="authStore.user?.name || 'Usuario'"
+        :photo="authStore.user?.photo"
+        :showName="drawer"
+      />
 
       <v-divider class="my-2" />
 
@@ -45,6 +38,7 @@
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/store/auth'
 import { logoutService } from '@/services/auth.service'
+import { SidebarProfile } from '.'
 
 const props = defineProps<{ drawer: boolean }>()
 const emit = defineEmits(['toggle-drawer'])

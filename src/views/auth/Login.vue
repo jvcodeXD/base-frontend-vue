@@ -12,14 +12,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
-import { loginService } from '@/services/auth.service'
+import { useAuthStore, useToastStore } from '@/store'
+import { loginService } from '@/services'
+import { useToastNotify } from '@/composables'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toastStore = useToastStore()
+const notify = useToastNotify()
 const username = ref('')
 const pass = ref('')
-const errorMessage = ref('')
 
 const login = async () => {
   try {
@@ -27,13 +29,15 @@ const login = async () => {
 
     authStore.login(response.accessToken, response.user.role)
 
+    toastStore.addToast('success', 'Inicio de sesión exitoso')
+
     if (response.user.role === 'admin') {
       router.push('admin-dashboard')
     } else {
       router.push('user-dashboard')
     }
   } catch (error) {
-    errorMessage.value = 'Usuario o contraseña incorrectos'
+    notify.error('Usuario o contraseña incorrectos')
   }
 }
 </script>
