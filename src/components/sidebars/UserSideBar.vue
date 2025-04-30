@@ -3,8 +3,8 @@
     <v-list dense nav>
       <!-- Perfil -->
       <SidebarProfile
-        :name="authStore.user?.name || 'Usuario'"
-        :photo="authStore.user?.photo"
+        :name="authStore.user?.fullName || 'Usuario'"
+        :picture="'http://localhost:4000' + authStore.user.picture"
         :showName="drawer"
       />
 

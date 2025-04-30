@@ -1,7 +1,11 @@
 <template>
   <v-list-item class="d-flex flex-column align-center pt-4 pb-1">
     <v-avatar size="64">
-      <img :src="photo" alt="Foto de perfil" style="object-fit: cover; width: 100%; height: 100%" />
+      <img
+        :src="picture"
+        alt="Foto de perfil"
+        style="object-fit: cover; width: 100%; height: 100%"
+      />
     </v-avatar>
     <div
       v-if="showName"
@@ -14,9 +18,9 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   name: string
-  photo: string
+  picture: string
   showName: boolean
 }>()
 </script>

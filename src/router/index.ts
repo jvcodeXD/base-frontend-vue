@@ -6,6 +6,7 @@ import AdminDashboard from '@/views/dashboard/AdminDashboard.vue'
 import UserDashboard from '@/views/dashboard/UserDashboard.vue'
 import NotFound from '@/views/NotFound.vue'
 import { useAuthStore } from '@/store/auth'
+import Users from '@/views/admin/users/Users.vue'
 
 // Definición de rutas
 const routes = [
@@ -21,6 +22,12 @@ const routes = [
     path: '/admin-dashboard',
     name: 'AdminDashboard',
     component: AdminDashboard,
+    meta: { requiresAuth: true, role: 'admin' },
+  },
+  {
+    path: '/admin/usuarios',
+    name: 'Users',
+    component: Users,
     meta: { requiresAuth: true, role: 'admin' },
   },
   {

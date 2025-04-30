@@ -1,29 +1,28 @@
 import { defineStore } from 'pinia'
+import type { AuthUser, Usuario } from '@/interfaces'
+import { ref } from 'vue'
 
-interface User {
-  name: string
-  photo: string
-}
+const user = ref<AuthUser | null>(null)
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     isAuthenticated: false,
     token: '',
     role: '',
-    user: <User>{},
+    user: <Usuario>{},
   }),
   actions: {
-    login(token: string, role: string, user: User) {
+    login(accessToken: string, userData: AuthUser) {
+      this.token = accessToken
+      this.user = userData
+      this.role = userData.role
       this.isAuthenticated = true
-      this.token = token
-      this.role = role
-      this.user = user
     },
     logout() {
       this.isAuthenticated = false
       this.token = ''
       this.role = ''
-      this.user = <User>{}
+      this.user = <Usuario>{}
     },
   },
   persist: true,

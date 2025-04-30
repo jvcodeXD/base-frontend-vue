@@ -15,6 +15,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore, useToastStore } from '@/store'
 import { loginService } from '@/services'
 import { useToastNotify } from '@/composables'
+import { AuthResponse } from '@/interfaces'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -25,12 +26,8 @@ const pass = ref('')
 
 const login = async () => {
   try {
-    const response = await loginService(username.value, pass.value)
-
-    authStore.login(response.accessToken, response.user.role, {
-      name: response.user.fullName,
-      photo: `http://localhost:4000${response.user.picture}`,
-    })
+    const response = (await loginService(username.value, pass.value)) as AuthResponse
+    authStore.login(response.accessToken, response.user)
 
     toastStore.addToast('success', 'Inicio de sesión exitoso')
 

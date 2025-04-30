@@ -3,8 +3,8 @@
     <v-list dense nav>
       <!-- Perfil -->
       <SidebarProfile
-        :name="authStore.user?.name || 'Usuario'"
-        :photo="authStore.user?.photo"
+        :name="authStore.user?.fullName || 'Usuario'"
+        :picture="'http://localhost:4000' + authStore.user.picture"
         :showName="drawer"
       />
 
@@ -14,6 +14,11 @@
       <v-list-item @click="goTo('Home')">
         <v-icon>mdi-home</v-icon>
         <v-list-item-title v-if="drawer">Home</v-list-item-title>
+      </v-list-item>
+
+      <v-list-item @click="goTo('Users')">
+        <v-icon>mdi-account-multiple</v-icon>
+        <v-list-item-title v-if="drawer">Usuarios</v-list-item-title>
       </v-list-item>
 
       <v-list-item @click="goTo('About')">
