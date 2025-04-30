@@ -36,26 +36,36 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
-import { logoutService } from '@/services/auth.service'
+import { useAuthStore, useToastStore } from '@/store'
+import { logoutService } from '@/services'
 import { SidebarProfile } from '.'
+import { useConfirmDialog, useToastNotify } from '@/composables'
 
 const props = defineProps<{ drawer: boolean }>()
 const emit = defineEmits(['toggle-drawer'])
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toastStore = useToastStore()
+const notify = useToastNotify()
 
 const goTo = (routeName: string) => {
   router.push({ name: routeName })
 }
 
+const { show } = useConfirmDialog()
+
 const logout = async () => {
   try {
+    const confirm = await show('¿Estás seguro de cerrar sesión?', 'info')
+
+    if (!confirm) return
+
     await logoutService()
   } catch (error) {
-    console.error('Error en logout')
+    notify.error('Error en logout')
   } finally {
+    toastStore.addToast('info', 'Sesión cerrada correctamente')
     authStore.logout()
     router.push({ name: 'Home' })
   }

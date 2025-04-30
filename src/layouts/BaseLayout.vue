@@ -14,6 +14,7 @@
     <v-main>
       <v-container>
         <router-view />
+        <ConfirmDialog />
       </v-container>
     </v-main>
   </v-app>
@@ -21,9 +22,9 @@
 
 <script setup lang="ts">
 import { ref, watchEffect } from 'vue'
-import { useThemeStore } from '@/store/theme'
 import { useTheme } from 'vuetify'
-import SideBarSelector from '@/components/SideBarSelector.vue'
+import { useThemeStore } from '@/store'
+import { SideBarSelector, ConfirmDialog } from '@/components'
 
 const drawer = ref(true)
 const themeStore = useThemeStore()

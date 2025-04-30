@@ -12,13 +12,15 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/store/auth'
 import { onMounted } from 'vue'
+import { useAuthStore, useToastStore } from '@/store'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const toastStore = useToastStore()
 
 onMounted(() => {
+  toastStore.showPendingToasts()
   if (authStore.isAuthenticated) {
     if (authStore.role === 'admin') {
       router.replace({ name: 'AdminDashboard' })
