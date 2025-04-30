@@ -5,6 +5,10 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     token: '',
     role: '',
+    user: {
+      name: 'Juan Pérez',
+      photo: 'https://i.pravatar.cc/150?img=3',
+    },
   }),
   actions: {
     login(token: string, role: string) {

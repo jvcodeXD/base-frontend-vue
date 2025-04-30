@@ -1,6 +1,23 @@
 <template>
-  <v-navigation-drawer app :permanent="true" :width="drawer ? 240 : 72" color="primary" dark>
+  <v-navigation-drawer app :permanent="true" :width="drawer ? 200 : 72" color="primary" dark>
     <v-list dense nav>
+      <!-- Perfil -->
+      <v-list-item class="d-flex flex-column align-center pt-4 pb-1">
+        <v-avatar size="64">
+          <img :src="authStore.user?.photo" alt="Foto de perfil" />
+        </v-avatar>
+        <div
+          v-if="drawer"
+          class="mt-2 text-subtitle-2 font-weight-medium text-center"
+          style="max-width: 100px; word-break: break-word"
+        >
+          {{ authStore.user?.name || 'Usuario' }}
+        </div>
+      </v-list-item>
+
+      <v-divider class="my-2" />
+
+      <!-- Navegación -->
       <v-list-item @click="goTo('Home')">
         <v-icon>mdi-home</v-icon>
         <v-list-item-title v-if="drawer">Home</v-list-item-title>
@@ -11,17 +28,13 @@
         <v-list-item-title v-if="drawer">About</v-list-item-title>
       </v-list-item>
 
-      <v-list-item @click="goTo('AdminDashboard')">
-        <v-icon>mdi-view-dashboard</v-icon>
-        <v-list-item-title v-if="drawer">Admin Panel</v-list-item-title>
-      </v-list-item>
-
       <v-list-item @click="logout">
         <v-icon>mdi-logout</v-icon>
         <v-list-item-title v-if="drawer">Cerrar Sesión</v-list-item-title>
       </v-list-item>
     </v-list>
 
+    <!-- Botón de colapso -->
     <v-btn icon @click="$emit('toggle-drawer')" class="mt-auto mb-4" color="secondary">
       <v-icon>{{ drawer ? 'mdi-chevron-left' : 'mdi-chevron-right' }}</v-icon>
     </v-btn>

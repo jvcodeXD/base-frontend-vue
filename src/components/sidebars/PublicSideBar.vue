@@ -1,6 +1,16 @@
 <template>
-  <v-navigation-drawer app :permanent="true" :width="drawer ? 240 : 72" color="primary" dark>
+  <v-navigation-drawer app :permanent="true" :width="drawer ? 200 : 72" color="primary" dark>
     <v-list dense nav>
+      <!-- Perfil genérico -->
+      <v-list-item class="d-flex flex-column align-center pt-4 pb-1">
+        <v-icon size="48">mdi-account-circle-outline</v-icon>
+        <div v-if="drawer" class="mt-2 text-subtitle-2 font-weight-medium text-center">
+          Bienvenido
+        </div>
+      </v-list-item>
+
+      <v-divider class="my-2" />
+
       <v-list-item @click="goTo('Home')">
         <v-icon>mdi-home</v-icon>
         <v-list-item-title v-if="drawer">Home</v-list-item-title>
@@ -31,7 +41,7 @@ const emit = defineEmits(['toggle-drawer'])
 
 const router = useRouter()
 
-const goTo = (ruta: string) => {
-  router.push({ name: ruta })
+const goTo = (routeName: string) => {
+  router.push({ name: routeName })
 }
 </script>

@@ -1,6 +1,22 @@
 <template>
-  <v-navigation-drawer app :permanent="true" :width="drawer ? 240 : 72" color="primary" dark>
+  <v-navigation-drawer app :permanent="true" :width="drawer ? 200 : 72" color="primary" dark>
     <v-list dense nav>
+      <!-- Perfil -->
+      <v-list-item class="d-flex flex-column align-center pt-4 pb-1">
+        <v-avatar size="64">
+          <img :src="authStore.user?.photo" alt="Foto de perfil" />
+        </v-avatar>
+        <div
+          v-if="drawer"
+          class="mt-2 text-subtitle-2 font-weight-medium text-center"
+          style="max-width: 100px; word-break: break-word"
+        >
+          {{ authStore.user?.name || 'Usuario' }}
+        </div>
+      </v-list-item>
+
+      <v-divider class="my-2" />
+
       <v-list-item @click="goTo('Home')">
         <v-icon>mdi-home</v-icon>
         <v-list-item-title v-if="drawer">Home</v-list-item-title>
@@ -9,11 +25,6 @@
       <v-list-item @click="goTo('About')">
         <v-icon>mdi-information</v-icon>
         <v-list-item-title v-if="drawer">About</v-list-item-title>
-      </v-list-item>
-
-      <v-list-item @click="goTo('UserDashboard')">
-        <v-icon>mdi-account</v-icon>
-        <v-list-item-title v-if="drawer">Mi Panel</v-list-item-title>
       </v-list-item>
 
       <v-list-item @click="logout">
@@ -39,8 +50,8 @@ const emit = defineEmits(['toggle-drawer'])
 const router = useRouter()
 const authStore = useAuthStore()
 
-const goTo = (ruta: string) => {
-  router.push({ name: ruta })
+const goTo = (routeName: string) => {
+  router.push({ name: routeName })
 }
 
 const logout = async () => {
