@@ -1,91 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/views/Home.vue'
-import About from '@/views/About.vue'
-import Login from '@/views/auth/Login.vue'
-import AdminDashboard from '@/views/dashboard/AdminDashboard.vue'
-import UserDashboard from '@/views/dashboard/UserDashboard.vue'
-import NotFound from '@/views/NotFound.vue'
+import { AdminRoutes, AuthRoutes, NotFoundRoutes, PublicRoutes, UserRoutes } from './modules'
 import { useAuthStore } from '@/store/auth'
-import Users from '@/views/admin/users/Users.vue'
 
-// Definición de rutas
-const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/about', name: 'About', component: About },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login,
-    meta: { layout: 'auth' },
-  },
-  {
-    path: '/admin-dashboard',
-    name: 'AdminDashboard',
-    component: AdminDashboard,
-    meta: { requiresAuth: true, role: 'admin' },
-  },
-  {
-    path: '/admin/usuarios',
-    name: 'Users',
-    component: Users,
-    meta: { requiresAuth: true, role: 'admin' },
-  },
-  {
-    path: '/user-dashboard',
-    name: 'UserDashboard',
-    component: UserDashboard,
-    meta: { requiresAuth: true, role: 'user' },
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: NotFound,
-    meta: { layout: 'error' },
-  },
-]
+const routes = [...PublicRoutes, ...AuthRoutes, ...AdminRoutes, ...UserRoutes, ...NotFoundRoutes]
 
-// Crear router
 const router = createRouter({
   history: createWebHistory(),
   routes,
 })
 
-// Middleware Global de protección de rutas
+// Middleware global
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
 
-  // Si la ruta requiere autenticación
-  if (to.meta.requiresAuth) {
-    if (!authStore.isAuthenticated) {
-      next({ name: 'Login' })
-      return
-    }
-
-    if (to.meta.role && to.meta.role !== authStore.role) {
-      if (authStore.role === 'admin') {
-        next({ name: 'AdminDashboard' })
-      } else if (authStore.role === 'user') {
-        next({ name: 'UserDashboard' })
-      } else {
-        next({ name: 'Home' })
-      }
-      return
-    }
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    return next({ name: 'Login' })
   }
 
-  // Si estás autenticado y quieres ir al Login
+  if (to.meta.requiresAuth && to.meta.role !== authStore.role) {
+    return next({ name: authStore.role === 'admin' ? 'AdminDashboard' : 'UserDashboard' })
+  }
+
   if (authStore.isAuthenticated && to.name === 'Login') {
-    if (authStore.role === 'admin') {
-      next({ name: 'AdminDashboard' })
-    } else if (authStore.role === 'user') {
-      next({ name: 'UserDashboard' })
-    } else {
-      next({ name: 'Home' })
-    }
-    return
+    return next({ name: authStore.role === 'admin' ? 'AdminDashboard' : 'UserDashboard' })
   }
 
-  // Permitir todo lo demás
   next()
 })
 
