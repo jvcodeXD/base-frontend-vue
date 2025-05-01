@@ -1,10 +1,15 @@
 <template>
   <v-container class="fill-height d-flex flex-column justify-center align-center text-center">
     <v-card class="pa-8" elevation="8" max-width="400">
-      <v-card-title class="text-h5 font-weight-bold mb-4"> Iniciar Sesión </v-card-title>
+      <v-card-title class="text-h5 font-weight-bold mb-4">Iniciar Sesión</v-card-title>
+
       <v-text-field label="Usuario" v-model="username" outlined dense />
       <v-text-field label="Contraseña" v-model="pass" type="password" outlined dense />
-      <v-btn color="primary" class="mt-4" @click="login">Ingresar</v-btn>
+
+      <v-card-actions class="justify-end mt-4">
+        <v-btn variant="elevated" color="error" @click="cancelar">Cancelar</v-btn>
+        <v-btn variant="elevated" color="primary" @click="login">Ingresar</v-btn>
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -39,5 +44,9 @@ const login = async () => {
   } catch (error) {
     notify.error('Usuario o contraseña incorrectos')
   }
+}
+
+const cancelar = () => {
+  router.push({ name: 'Home' })
 }
 </script>
