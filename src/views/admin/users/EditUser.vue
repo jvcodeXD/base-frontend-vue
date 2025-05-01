@@ -5,17 +5,52 @@
 
       <v-card-text>
         <v-form ref="form">
-          <v-text-field v-model="localUser.username" label="Usuario" required />
-          <v-text-field v-model="localUser.fullName" label="Nombre completo" required />
-          <v-select v-model="localUser.role" :items="['admin', 'user']" label="Rol" required />
-          <v-text-field v-model="localUser.picture" label="URL de imagen" />
+          <v-row dense>
+            <v-col cols="12" class="text-center">
+              <v-avatar size="96">
+                <v-img :src="previewUrl" />
+              </v-avatar>
+              <v-file-input
+                v-model="pictureFile"
+                accept="image/*"
+                show-size
+                label="Seleccionar imagen"
+                prepend-icon="mdi-camera"
+                class="mt-2"
+              />
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-text-field v-model="localUser.username" label="Usuario" required />
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-text-field
+                v-model="localUser.password"
+                :type="type"
+                :append-inner-icon="icon"
+                @click:append-inner="toggle"
+                label="Contraseña (opcional)"
+                :rules="[v => !v || v.length >= 6 || 'Debe tener al menos 6 caracteres']"
+                :required="false"
+              />
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-text-field v-model="localUser.fullName" label="Nombre completo" required />
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <v-select v-model="localUser.role" :items="['admin', 'user']" label="Rol" required />
+            </v-col>
+          </v-row>
         </v-form>
       </v-card-text>
 
       <v-card-actions>
         <v-spacer />
-        <v-btn variant="tonal" @click="cancel">Cancelar</v-btn>
-        <v-btn variant="tonal" color="primary" @click="submit">Actualizar</v-btn>
+        <v-btn variant="elevated" color="primary" @click="cancel">Cancelar</v-btn>
+        <v-btn variant="elevated" color="success" @click="submit">Actualizar</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -25,6 +60,9 @@
 import { ref, watch, computed } from 'vue'
 import { updateUser } from '@/services'
 import { Usuario } from '@/interfaces'
+import { usePasswordField, useImageUpload, useToastNotify } from '@/composables'
+
+const { type, icon, toggle } = usePasswordField()
 
 const props = defineProps<{
   modelValue: boolean
@@ -32,6 +70,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(['update:modelValue', 'saved'])
+const notify = useToastNotify()
 
 const isOpen = computed({
   get: () => props.modelValue,
@@ -43,23 +82,59 @@ const localUser = ref<Omit<Usuario, 'id'>>({
   fullName: '',
   role: 'user',
   picture: '',
+  password: '',
 })
+
+const {
+  file: pictureFile,
+  previewUrl,
+  reset,
+} = useImageUpload(
+  props.user?.picture ? `http://localhost:4000${props.user.picture}` : '/placeholder-user.png'
+)
 
 watch(
   () => props.user,
   user => {
-    if (user) localUser.value = { ...user }
+    if (user) {
+      localUser.value = { ...user }
+      previewUrl.value = user.picture
+        ? `http://localhost:4000${user.picture}`
+        : '/placeholder-user.png' // tu imagen por defecto
+      pictureFile.value = null
+    }
   },
   { immediate: true }
 )
+
+watch(pictureFile, file => {
+  if (file) previewUrl.value = URL.createObjectURL(file)
+})
 
 const cancel = () => {
   isOpen.value = false
 }
 
 const submit = async () => {
-  await updateUser(props.user.id, localUser.value)
-  emit('saved')
-  isOpen.value = false
+  try {
+    const formData = new FormData()
+    formData.append('username', localUser.value.username)
+    formData.append('fullName', localUser.value.fullName)
+    formData.append('role', localUser.value.role)
+    if (localUser.value.password?.trim()) {
+      formData.append('password', localUser.value.password)
+    }
+
+    if (pictureFile.value) {
+      formData.append('picture', pictureFile.value)
+    }
+
+    await updateUser(props.user.id, formData)
+    notify.success('Usuario actualizado correctamente')
+    emit('saved')
+    isOpen.value = false
+  } catch (error) {
+    notify.error('Error al actualizar el usuario')
+  }
 }
 </script>

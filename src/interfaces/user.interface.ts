@@ -4,4 +4,5 @@ export interface Usuario {
   fullName: string
   role: 'admin' | 'user'
   picture: string
+  password?: string
 }
