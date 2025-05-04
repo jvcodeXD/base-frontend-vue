@@ -97,10 +97,11 @@ watch(
   () => props.user,
   user => {
     if (user) {
-      localUser.value = { ...user }
+      const { password, ...rest } = user
+      localUser.value = { ...rest, password: '' }
       previewUrl.value = user.picture
         ? `http://localhost:4000${user.picture}`
-        : '/placeholder-user.png' // tu imagen por defecto
+        : '/placeholder-user.png'
       pictureFile.value = null
     }
   },

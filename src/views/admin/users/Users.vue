@@ -58,7 +58,7 @@ const confirmDelete = async (usuario: Usuario) => {
 
 const reloadUsuarios = async () => {
   const response = await getAllUsers()
-  usuarios.value = response.data
+  usuarios.value = response
 }
 
 onMounted(() => {
